@@ -1,0 +1,423 @@
+\documentclass{report}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage[x11names]{xcolor}
+\usepackage[textwidth = 16cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{paracol}
+\usepackage{microtype}
+\usepackage{hyperref}
+\newcounter{testexample}
+\usepackage{xparse}
+\usepackage{fontspec}
+\setlength{\columnseprule}{0.2pt}
+\usepackage{enumitem}
+\usepackage{lmodern}
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\xmark}{\ding{55}}%
+\usepackage[makeroom]{cancel}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{newunicodechar}
+\usepackage{tikz}\usetikzlibrary{shapes.misc}
+\newcommand\xdownarrow[1][2ex]{%
+   \mathrel{\rotatebox{90}{$\xleftarrow{\rule{#1}{0pt}}$}}
+}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+\usepackage{bm}
+\newcommand\bigcdot{\bm{\cdot}}
+\usepackage{booktabs}
+\setlength\defaultaddspace{0.5ex}
+\usepackage[math]{cellspace}
+\setlength\cellspacetoplimit{3pt}
+\setlength\cellspacebottomlimit{3pt}
+
+
+\usepackage{accents}
+
+\newcommand\titlebar{%
+\tikz[baseline,trim left=3.1cm,trim right=3cm] {
+    \fill [cyan!25] (2.5cm,-1ex) rectangle (\textwidth+3.1cm,2.5ex);
+    \node [
+        fill=cyan!60!black,
+        anchor= base east,
+        rounded rectangle,
+        minimum height=3.5ex] at (3cm,0) {
+        \textbf{\arabic{chapter}.\thesection.}
+    };
+}%
+}
+\titleformat{\section}{\large}{\titlebar}{0.1cm}{}
+\renewcommand*{\thesection}{\arabic{section}}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\def\particulartemplate#1{
+  \begin{tikzpicture}[overlay, remember picture] 
+    \draw let \p1 = (current page.west), \p2 = (current page.east) in
+      node[minimum width=\x2-\x1, minimum height=2cm, draw, rectangle, fill=blue!20, anchor=north west, align=left, text width=\x2-\x1] at ($(current page.north west)$) {\Large\bfseries \quad #1};
+  \end{tikzpicture}
+}
+\newenvironment{Definition}% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{\underline{\large{Definition:}}}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+\newenvironment{Theorem}% environment name
+{% begin code
+  \par\vspace{\baselineskip}\noindent
+  \textbf{\underline{\large{Theorem:}}}\begin{itshape}%
+  \par\vspace{\baselineskip}\noindent\ignorespaces
+}%
+{% end code
+  \end{itshape}\ignorespacesafterend
+}
+\newcommand{\newbrace}[1][]{
+\begin{tikzpicture}[baseline=-0.5ex]
+\draw[#1] (0,0) -- (0.9,0.9);
+\draw[#1] (0,0) -- (0.9,-0.9);
+\end{tikzpicture}}
+\newenvironment{casesnew}[1][->]%
+{\;\newbrace[#1]\;\begin{array}{@{}l@{}}}%
+{\end{array}}
+\newunicodechar{ā}{\=a}
+\newunicodechar{ṇ}{\d{n}}
+\definecolor{pearl}{rgb}{0.94, 0.92, 0.84}
+
+\newcommand{\mybox}[4]{
+    \begin{figure}[h]
+        \centering
+    \begin{tikzpicture}
+        \node[anchor=text,text width=\columnwidth-1.2cm, draw, rounded corners, line width=1pt, fill=#3, inner sep=5mm] (big) {\\#4};
+        \node[draw, rounded corners, line width=.5pt, fill=#2, anchor=west, xshift=5mm] (small) at (big.north west) {#1};
+    \end{tikzpicture}
+    \end{figure}
+}
+
+
+
+  
+\def\exampletext{Example} % If English
+
+\NewDocumentEnvironment{testexample}{ O{} }
+{
+\colorlet{colexam}{red!55!black} % Global example color
+\newtcolorbox[use counter=testexample]{testexamplebox}{%
+    % Example Frame Start
+    empty,% Empty previously set parameters
+    title={\exampletext: #1},% use \thetcbcounter to access the testexample counter text
+    % Attaching a box requires an overlay
+    attach boxed title to top left,
+       % Ensures proper line breaking in longer titles
+       minipage boxed title,
+    % (boxed title style requires an overlay)
+    boxed title style={empty,size=minimal,toprule=0pt,top=4pt,left=3mm,overlay={}},
+    coltitle=colexam,fonttitle=\bfseries,
+    before=\par\medskip\noindent,parbox=false,boxsep=0pt,left=3mm,right=0mm,top=2pt,breakable,pad at break=0mm,
+       before upper=\csname @totalleftmargin\endcsname0pt, % Use instead of parbox=true. This ensures parskip is inherited by box.
+    % Handles box when it exists on one page only
+    overlay unbroken={\draw[colexam,line width=.5pt] ([xshift=-0pt]title.north west) -- ([xshift=-0pt]frame.south west); },
+    % Handles multipage box: first page
+    overlay first={\draw[colexam,line width=.5pt] ([xshift=-0pt]title.north west) -- ([xshift=-0pt]frame.south west); },
+    % Handles multipage box: middle page
+    overlay middle={\draw[colexam,line width=.5pt] ([xshift=-0pt]frame.north west) -- ([xshift=-0pt]frame.south west); },
+    % Handles multipage box: last page
+    overlay last={\draw[colexam,line width=.5pt] ([xshift=-0pt]frame.north west) -- ([xshift=-0pt]frame.south west); },%
+    }
+\begin{testexamplebox}}
+{\end{testexamplebox}\endlist}
+
+
+\begin{document}
+\vspace{2cm}
+
+
+\vspace{\medskipamount}
+\hrule height 0.4pt
+\vspace{3pt}
+\hrule height 1.6pt
+    \particulartemplate{Lecture 7 Notes (Dr. Khaled Adarbeh) / Modern Algebra(I) }
+ 
+ \vspace{2cm}
+
+\begin{tcolorbox}[breakable, enhanced, sharp corners, colback=white!30, colframe=green!80!blue, title="Another Subgroup Test"]
+\begin{Theorem}
+Let $H$ , $K$ be a subgroup of a group $G$
+\begin{enumerate}
+\item $H \cap K$ is a subgroup.
+\item $H \cup K$ is a subgroup \; $\Longleftrightarrow \; H \; \subseteq \; K$ or $K \; \subseteq \; H$
+\item $\{hk / h \; \in \; H, k \; \in \; K\}$
+\end{enumerate}
+\end{Theorem}
+\end{tcolorbox}
+\emph{\underline{\textcolor{red}{Proof:}}}\\
+\vspace{0.2cm}\\
+\circled{1}\\
+\vspace{0.2cm}\\
+\underline{$1 \; \in \; H \cap K:$}\\ \vspace{0.2cm}
+
+$\begin{rcases}
+   1 \; \in \; K \; (\text{Subgroup})\\
+   1 \; \in \; H \; (\text{Subgroup})\\
+\end{rcases} \; \; \Longrightarrow \; 1 \; \in \; H \cap K$\\
+$\begin{rcases}
+x , y \; \in \; H \cap K\; \; \Longrightarrow \;   \begin{rcases}
+   x \; \in \; H \; \\
+   y \; \in \; H \; \\
+\end{rcases} \; \; \Longrightarrow \; \; xy \; \in \; H \\ 
+       \boxed{\text{and}} \hspace{2.3cm}  \begin{rcases}
+   x \; \in \; K \; \\
+   y \; \in \; K \; \\
+\end{rcases} \; \; \Longrightarrow \; \; xy \; \in \; K
+\end{rcases} \; \; \Longrightarrow \; \; xy \; \in \; H \cap K$\\
+$x \; \in \; H \cap  K \; \; \Longrightarrow \; \; \begin{rcases}
+x \; \in \; H \; \Longrightarrow \; \; x^{-1} \; \in \; H\\
+   x \; \in \; K \; \Longrightarrow \; \; x^{-1} \; \in \; K \\
+\end{rcases} \; \; \Longrightarrow \; x^{-1} \; \in \; H \cap K$\\
+\vspace{0.3cm}\\
+\circled{2}\\
+\vspace{0.2cm}\\
+"$\Longleftarrow$" \hspace{0.5cm} Trivial\\
+$H \; \subseteq \; K \; \; \Longrightarrow \; H \cup K \; = \; K$, where $K$ is subgroup \\
+$\therefore \; \; H \cup K$ is subgroup\\
+\vspace{0.2cm}\\
+"$\Longrightarrow$" \; \; \; Assume that:
+\begin{itemize}
+\item $H  \cup K$ is subgroup
+\item $H \not\subseteq K$ \; \; (i.e. $\exists \; h_0 \; \in \; H$ \ $k$) 
+\end{itemize}
+we want to show $K \; \subseteq \; H$ :\\
+$\begin{rcases}
+\text{Let} \; k_0 \; \in \; K \; (\text{arbitrary}) \; \; \Longrightarrow \; k_0 \; \in \; H \cup K\\
+\hspace*{0.5cm} h_0 \; \in \; K \; \; \; \; \; \Longrightarrow \; \; h_0 \; \in \; H \cup K
+\end{rcases} \; \; \Longrightarrow \; k_0 h_0 \; \in \; H \cup K$ "because $H \cup K$ subgroup"\\
+\vspace{0.1cm}\\
+$k_0 h_0 \; \in \; H$ \hspace{1cm} or \hspace{1cm} $k_0 h_0 \; \in \; K$\\
+$H$ is subgroup \hspace{2cm} $K$ is subgroup\\
+$\Longrightarrow \; h_0^{-1} \; \in \; H$ \hspace{2.2cm} $\Longrightarrow \; k_0^{-1} \; \in \; H$ \\
+$\Longrightarrow \; kh_0h_0^{-1} \; \in \; H$ \hspace{1.6cm} $\Longrightarrow \; k_0^{-1}kh_0 \; \in \; k$ \\
+$\Longrightarrow k_0 \; \in \; H$ \hspace{2.5cm} $\Longrightarrow \; h_0 \; \in \; k$ \\
+\newline
+\hspace*{0.5cm} we have a contradiction. \\
+"$ H \; \not\subseteq \; K \; \; i.e. \; \; \exists \; h_0 \; \in \; H \; \underbrace{/}_{\text{except}} \; K$\\
+Thus $h \cup K$ is subgroup $\Longleftrightarrow \; \; H \; \subseteq \; K \; \; \text{or} \; \; K \; \subseteq \; H$\\
+\newline
+\emph{\underline{\textcolor{red}{Note:}}}\\
+$H \cup K$ \; is  subgroup in general?\\
+No.\\
+
+\begin{tcolorbox}[breakable, enhanced, sharp corners, colback=white!30, colframe=green!80!blue, title="Center of a group"]
+\begin{Definition}
+$z(G) \; \colon= \; \{a \; \in \; G / \; ax \; = \; xa \; \; \; \forall \; x \; \in \; G\}$
+\end{Definition}
+\end{tcolorbox}
+\emph{\underline{\textcolor{red}{Note:}}}\\
+this is for the whole group.\\
+\vspace{0.3cm}\\
+
+
+\begin{tcolorbox}[breakable, enhanced, sharp corners, colback=white!30, colframe=green!80!blue]
+
+\begin{Theorem}
+$z(G)$ is an abelian subgroup of $G$
+\end{Theorem}
+\end{tcolorbox}
+
+\emph{\underline{\textcolor{red}{Proof:}}}\\
+\vspace{0.1cm}\\
+\hspace*{0.3cm} \underline{$1 \; \in \; z(G)$ \; ???}\\
+\vspace{0.06cm}\\
+$1 . x \; = \; x . 1 \; = \; x$ \; \; it is true  \; \; $\therefore \; 1 \; \in \; z(G)$\\
+\newline
+\hspace*{0.3cm} \underline{$ a , b \; \in \; z(G) \; \xRightarrow{\text{??}} \; \; ab \; \in \; z(G)$}\\
+\vspace{0.06cm}\\
+$ax \; = \; xa$\\
+$bx \; = \; xb$\\
+$(ab) (x) \; = \; a (bx)$ \; \; \; "$b$ in center" \hfill "Asspciative"\\
+\hspace*{0.5cm} $= a (x b)$ \hfill $b \; \in \; z(G)$\\
+\hspace*{0.5cm} $= (a x ) b $ \hfill "Associative"\\
+\hspace*{0.5cm} $= x (a b)$ \hfill $a \; \in \; z(G)$
+\newline
+\hspace*{0.3cm} \underline{$a \; \in \; z(G) \; \xRightarrow{\text{??}} \; \; a^{-1} \; \in \; z(G)$}\\
+\vspace{0.06cm}\\
+$ax \; = \; xa \; \; \; \; \; \forall \; x \; \in \; G$\\
+$(ax \; = \; xa) \times (a^{-1})$\hfill "we multiply from both right and left"\\
+$\Longrightarrow \; a^{-1} a x a^{-1} \; = \; a^{-1} x a a^{-1}$ \\
+$\Longrightarrow \; e x a^{-1} \; = \; a^{-1} x e$\\
+$\Longrightarrow \; x a^{-1} \; = \; a^{-1} x$ \; \; \; \; $\forall \; x \; \in \; G$\\
+\newline
+\hspace*{0.3cm} \underline{Abelian ??}\\
+\vspace{0.06cm}\\
+$ab \; = \; ba \; \; \; \; \forall \; a , b \; \in \; z(G) \; \Longrightarrow \; z(G)$ \; Abelian.\\
+\vspace{0.2cm}\\
+\emph{\underline{\textcolor{red}{Note:}}}
+\begin{itemize}
+\item $z(G)$ is maximum with this property ( Abelian) meaning that, $z(G)$ is the largest subgroup we can obtain from $G$
+\item if $G$ is abelian group $\Longrightarrow$ \; \; $z(G) = G$
+\end{itemize}
+
+\begin{tcolorbox}[breakable, enhanced, sharp corners, colback=white!30, colframe=green!80!blue, title="Centralizer of an element"]
+\begin{Definition}
+$G$ group , $a \; \in \; G$\\
+$C(a) \; = \; \{x \; \in \; G \; / \; ax \; = \; xa \}$
+\end{Definition}
+\end{tcolorbox}
+
+\emph{\underline{\textcolor{red}{Note:}}}\\
+\begin{itemize}
+\item $C(a)$ this is for each element in the group.
+\item $z(G) \; \subseteq \; C(a) \; \; \; \forall \; a \; \in \; G$
+\item Centralizer is greater than center of a group.
+\end{itemize}
+\newpage
+\mybox{Note}{red!40}{red!10}{\begin{displaymath} z(G) \; = \; \bigcap_{a \in G} C(a)\end{displaymath}}
+
+\emph{\underline{\textcolor{red}{Proof:}}}\\
+\vspace{0.03cm}\\
+"\textcolor{red}{$\Longrightarrow$}" \; \; $\subseteq$\\
+$x \; \in \; z(G) \; \Longrightarrow \; xa \; = \; ax$\\
+\hspace*{1.6cm} $\Longrightarrow \; x \; \in \; C(a)$\\
+\hspace*{1.6cm} $\Longrightarrow \; x \; \in \; \bigcap_{a \in G} \; C(a)$\\
+\vspace{0.1cm}\\
+"\textcolor{red}{$\Longleftarrow$}" \; \; $\supseteq$\\
+$x \; \in \; \bigcap_{a \in G} \; C(a) \; \Longrightarrow \; x \; \in \; C(a) \; , \; \; \forall \; a \; \in \; G$\\
+\hspace*{2.6cm} $\Longrightarrow \; xa \; = \; ax \;, \; \forall \; a \; \in \; G$\\
+\hspace*{2.6cm} $\Longrightarrow \; x \; \in \; z(G)$\\
+\vspace{0.1cm}\\
+\emph{\underline{\textcolor{red}{Note:}}}\\
+\begin{itemize}
+\item $C(a)$ is a subgroup
+\end{itemize}
+\begin{testexample}
+\textcolor{red}{Is $C(a)$ Abelian?}\\
+\emph{\underline{\textcolor{red}{Solution:}}}\\
+let $G$ a non abelian group \\
+$e \; \in \; G \; , \; ea \; = \; ae \;= \; a$\\
+\hspace*{1.2cm} $C(e) \; = \; a \; = \; G$ \hfill "But, $G$ is non abelian from the assumption above"\\
+$\therefore \; C(e)$ \; non abelian 
+\end{testexample}
+\vspace{0.1cm}
+
+\emph{\underline{\textcolor{red}{Note:}}}\\
+\begin{itemize}
+\item $G$ abelian \; $\Longleftrightarrow \; C(a) \; = \; G \; , \; \forall \; a \; \in \; G$\\
+\hspace*{1.7cm} $\Longleftrightarrow \; z(G) \; = \; G$
+\end{itemize}
+\vspace{0.2cm}
+
+\begin{testexample}
+\boxed{\emph{\underline{\textcolor{red}{Ex: 37}}}}\\
+\includegraphics[width=10cm, height=5cm]{ex37}\\
+\vspace{0.2cm}\\
+$C(1) \; = \; G$\\
+$C(2) \; = \; \{1 , 2 , 5 , 6\}$\\
+$C(3) \; = \; \{1 , 3 , 5 , 7\}$\\
+$C(4) \; = \; \{1 , 4 , 5  , 8\}$\\
+$C(5) \; = \; \{1 , 5, 2 , 3 , 4 , 6 , 7 , 8\}$\\
+$C(6) \; = \; \{1 , 6 , 5 , 2\}$\\
+$C(7) \; = \; \{1 , 7 , 3 , 5\}$\\
+$C(8) \; = \; \{1 , 8 , 4 , 5\}$\\
+\newline
+$z(G) \; = \; \bigcap_{\forall a} \; C(a) \; = \; \{1 , 5\}$ \hfill "The intersection of all above sets"\\
+\newline
+\emph{\underline{\textcolor{red}{Note:}}} \; $5^2 \; = \; 1$
+\end{testexample}
+\begin{testexample}
+\boxed{\emph{\underline{\textcolor{red}{Ex: 79}}}}\\
+\newline
+\textcolor{red}{$G \; = \; GL (2 , \mathbb{R})$}\\
+\textcolor{red}{Find:}\\
+\vspace{0.1cm}\\
+1) \; $C\left(\begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix}\right)$ \hspace{1cm} 2) \; $C \left(\begin{bmatrix}
+0 & 1\\
+1 & 0
+\end{bmatrix}\right)$ \hspace{1cm} 3) $2(G)$\\
+\vspace{0.2cm}\\
+\emph{\underline{\textcolor{red}{Solution:}}}
+\begin{enumerate}
+\item $\begin{bmatrix}
+a & b\\
+c & d
+\end{bmatrix} \; \begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix} \; = \; \begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix} \; \begin{bmatrix}
+a & b\\
+c & d
+\end{bmatrix}$\\
+\vspace{0.3cm}\\
+$\begin{bmatrix}
+a+b & a\\
+c+d & c
+\end{bmatrix} \; = \; \begin{bmatrix}
+a+c & b+d\\
+a & b
+\end{bmatrix}$\\
+\vspace{0.3cm}\\
+$\Longrightarrow \; a + b \; = \; a +c \; \Longrightarrow \; b \; = \; c$\\
+$\Longrightarrow \; a \; = \; b + d \; \Longrightarrow \; d \; = \; a - b$\\
+$\Longrightarrow \; c + d \; = \; a$\\
+$\Longrightarrow \; b + d \; = \; c + d \; \Longrightarrow \; b \; = \; c$\\
+\vspace{0.1cm}\\
+$\therefore \; \begin{bmatrix}
+a & b\\
+b & a-b
+\end{bmatrix}$ \; \; \; \; \; \; \; \; s.t. \; $a(a - b) - b^2 \; \not= \; 0$\\
+\vspace{0.1cm}\\
+because we want to make sure it belongs to $GL ( 2 , \mathbb{R})$ \; so \; $det\left(\begin{bmatrix}
+a & b\\
+b & a-b
+\end{bmatrix}\right) \; \not= \; 0$\\
+$\Longrightarrow \; a^2 - ab - b^2 \; \not= \; 0$\\
+So, \; $C\left(\begin{bmatrix}
+1 & 1\\
+1 & 0
+\end{bmatrix}\right) \; = \; \left\{\begin{bmatrix}
+a & b\\
+b & a - b
+\end{bmatrix} \bigg/ \; a^2 - ab - b^2 \; \not= \; 0\right\}$\\
+\vspace{0.2cm}\\
+\item \textcolor{red}{Answer is:}\\
+\vspace{0.2cm}\\
+$\left\{\begin{bmatrix}
+a & b\\
+b & a
+\end{bmatrix} \; \bigg/ \; a^2 - b^2 \; \not= \; 0 \right\}$\\
+\vspace{0.2cm}\\
+\item Since $z(G) \;  = \; C_1 \; \cap \; C_2 \; \cap \; \dots \dots \; \cap \; C(a)$\\
+\vspace{0.1cm}\\
+we have, $\begin{bmatrix}
+a & b\\
+b & a-b
+\end{bmatrix} \; \in \; C_1$\\
+\vspace{0.1cm}\\
+and since belongs to $C_2$\\
+$ \Longleftrightarrow \; a \; = \; a - b$\\
+$\Longleftrightarrow \; b \; = \; 0$\\
+$\therefore \; C_1 \cap C_2 \; = \; \left\{\begin{bmatrix}
+a & 0\\
+0 & a
+\end{bmatrix} \; \bigg/ \; a \; \not= \; 0 \; \right\} \; = \; a I_n$\\
+\vspace{0.2cm}\\
+Which is $z(G)$\\
+\end{enumerate}
+\end{testexample}
+
+\mybox{Note}{red!40}{red!10}{Scalar matrices are abelian \\
+\& each scalar multiple is \textcolor{blue}{Center}}
+\end{document}
